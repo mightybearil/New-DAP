@@ -1,0 +1,276 @@
+:root { 
+  --aqua-deep: #084c37;
+  --aqua-deep-2: #084c3733;
+  --azure-radiance: #02a7ff;
+  --black: #000000;
+  --black-2: #00000082;
+  --denim: #2f6fc6;
+  --gossamer: #06b17d;
+  --heavy-metal: #2a2928;
+  --hint-of-red: #f9f9f9;
+  --hint-of-red-2: #f9f9f9cc;
+  --ice-cold: #aaffe5;
+  --lilac: #d09dfc;
+  --purple-heart: #7220d6;
+  --rose: #ff5656;
+  --te-papa-green: #1d4835;
+  --white: #ffffff;
+ 
+  --font-size-m: 25px;
+  --font-size-s: 21px;
+  --font-size-xs: 20px;
+  --font-size-xxs: 18px;
+  --font-size-xxxs: 16px;
+  --font-size-xxxxs: 14px;
+  --font-size-xxxxxs: 12px;
+ 
+  --font-family-asphalt-black: "Asphalt-Black", Helvetica;
+  --font-family-castoro-regular: "Castoro-Regular", Helvetica;
+  --font-family-caveat-regular: "Caveat-Regular", Helvetica;
+  --font-family-lato-light: "Lato-Light", Helvetica;
+  --font-family-lato-regular: "Lato-Regular", Helvetica;
+  --font-family-montserrat: "Montserrat", Helvetica;
+  --font-family-montserrat_alternates: "Montserrat Alternates", Helvetica;
+  --font-family-mulish-regular: "Mulish-Regular", Helvetica;
+}
+.lato-regular-normal-black-14px {
+  color: var(--black);
+  font-family: var(--font-family-lato-regular);
+  font-size: var(--font-size-xxxxs);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.lato-regular-normal-black-18px {
+  color: var(--black);
+  font-family: var(--font-family-lato-regular);
+  font-size: var(--font-size-xxs);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.lato-regular-normal-black-16px {
+  color: var(--black);
+  font-family: var(--font-family-lato-regular);
+  font-size: var(--font-size-xxxs);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.lato-light-black-16px {
+  color: var(--black);
+  font-family: var(--font-family-lato-light);
+  font-size: var(--font-size-xxxs);
+  font-style: normal;
+  font-weight: 300;
+}
+
+.castoro-regular-normal-black-16px {
+  color: var(--black);
+  font-family: var(--font-family-castoro-regular);
+  font-size: var(--font-size-xxxs);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.lato-regular-normal-black-12px {
+  color: var(--black);
+  font-family: var(--font-family-lato-regular);
+  font-size: var(--font-size-xxxxxs);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.caveat-regular-normal-rose-21px {
+  color: var(--rose);
+  font-family: var(--font-family-caveat-regular);
+  font-size: var(--font-size-s);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.lato-light-white-18px {
+  color: var(--white);
+  font-family: var(--font-family-lato-light);
+  font-size: var(--font-size-xxs);
+  font-style: normal;
+  font-weight: 300;
+}
+
+.lato-light-black-18px {
+  color: var(--black);
+  font-family: var(--font-family-lato-light);
+  font-size: var(--font-size-xxs);
+  font-style: normal;
+  font-weight: 300;
+}
+
+.lato-regular-normal-white-12px {
+  color: var(--white);
+  font-family: var(--font-family-lato-regular);
+  font-size: var(--font-size-xxxxxs);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.montserratalternates-semi-bold-white-25px {
+  color: var(--white);
+  font-family: var(--font-family-montserrat_alternates);
+  font-size: var(--font-size-m);
+  font-style: normal;
+  font-weight: 600;
+}
+
+.castoro-regular-normal-black-18px {
+  color: var(--black);
+  font-family: var(--font-family-castoro-regular);
+  font-size: var(--font-size-xxs);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.mulish-regular-normal-black-26px {
+  color: var(--black);
+  font-family: var(--font-family-mulish-regular);
+  font-size: 26px;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.montserrat-extra-bold-purple-heart-40px {
+  color: var(--purple-heart);
+  font-family: var(--font-family-montserrat);
+  font-size: 40px;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.montserrat-semi-bold-ice-cold-25px {
+  color: var(--ice-cold);
+  font-family: var(--font-family-montserrat);
+  font-size: var(--font-size-m);
+}
+
+.montserrat-extra-bold-ice-cold-25px {
+  color: var(--ice-cold);
+  font-family: var(--font-family-montserrat);
+  font-size: var(--font-size-m);
+  font-style: normal;
+  font-weight: 800;
+}
+
+.montserratalternates-semi-bold-ice-cold-25px {
+  color: var(--ice-cold);
+  font-family: var(--font-family-montserrat_alternates);
+  font-size: var(--font-size-m);
+  font-style: normal;
+  font-weight: 600;
+}
+
+.montserrat-extra-bold-purple-heart-20px {
+  color: var(--purple-heart);
+  font-family: var(--font-family-montserrat);
+  font-size: var(--font-size-xs);
+  font-style: normal;
+  font-weight: 800;
+}
+
+.montserratalternates-semi-bold-gossamer-25px {
+  color: var(--gossamer);
+  font-family: var(--font-family-montserrat_alternates);
+  font-size: var(--font-size-m);
+  font-style: normal;
+  font-weight: 600;
+}
+
+.lato-regular-normal-white-16px {
+  color: var(--white);
+  font-family: var(--font-family-lato-regular);
+  font-size: var(--font-size-xxxs);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.lato-regular-normal-black-12px-2 {
+  color: var(--black-2);
+  font-family: var(--font-family-lato-regular);
+  font-size: var(--font-size-xxxxxs);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.lato-regular-normal-te-papa-green-23px {
+  color: var(--te-papa-green);
+  font-family: var(--font-family-lato-regular);
+  font-size: 23px;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.lato-regular-normal-te-papa-green-12px {
+  color: var(--te-papa-green);
+  font-family: var(--font-family-lato-regular);
+  font-size: var(--font-size-xxxxxs);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.asphalt-black-white-94px {
+  color: var(--white);
+  font-family: var(--font-family-asphalt-black);
+  font-size: 94px;
+  font-style: normal;
+  font-weight: 900;
+}
+
+.montserratalternates-semi-bold-lilac-25px {
+  color: var(--lilac);
+  font-family: var(--font-family-montserrat_alternates);
+  font-size: var(--font-size-m);
+  font-style: normal;
+  font-weight: 600;
+}
+
+.montserratalternates-black-gossamer-25px {
+  color: var(--gossamer);
+  font-family: var(--font-family-montserrat_alternates);
+  font-size: var(--font-size-m);
+  font-style: normal;
+  font-weight: 900;
+}
+
+.castoro-regular-normal-black-24px {
+  color: var(--black);
+  font-family: var(--font-family-castoro-regular);
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.castoro-regular-normal-black-40px {
+  color: var(--black);
+  font-family: var(--font-family-castoro-regular);
+  font-size: 40px;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.lato-regular-normal-aqua-deep-16px {
+  color: var(--aqua-deep);
+  font-family: var(--font-family-lato-regular);
+  font-size: var(--font-size-xxxs);
+  font-style: normal;
+  font-weight: 400;
+}
+
+.border-1px-heavy-metal {
+  border: 1px solid var(--heavy-metal);
+}
+
+.border-2px-white {
+  border: 2px solid var(--white);
+}
+
+.border-1px-te-papa-green {
+  border: 1px solid var(--te-papa-green);
+}
