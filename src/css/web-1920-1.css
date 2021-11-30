@@ -150,6 +150,7 @@
   margin-top: 2.5px;
   white-space: nowrap;
   width: 119px;
+  
 }
 
 .web-1920-1 .component-15-1 {
@@ -302,10 +303,10 @@
 
 .web-1920-1 .path-23 {
   height: 112px;
-  left: 1648px;
+  left: 1784px;
   object-fit: cover;
   position: absolute;
-  top: 882px;
+  top: 912px;
   width: 133px;
 }
 
@@ -607,6 +608,19 @@
   white-space: nowrap;
 }
 
+.web-1920-1 .component-10-1 {
+  align-items: flex-start;
+  background-color: #1da1f2;
+  display: flex;
+  height: 82px;
+  justify-content: flex-end;
+  left: 1838px;
+  min-width: 82px;
+  padding: 17.8px 10.5px;
+  position: fixed;
+  top: 394px;
+  z-index: 16;
+}
 .web-1920-1 .component-9-1 {
   align-items: flex-end;
   background-color: #5865f2;
@@ -621,6 +635,20 @@
   z-index: 15;
 }
 
+.web-1920-1 .component-9-2 {
+  align-items: flex-end;
+  background: #FE7522;
+  display: flex;
+  height: 82px;
+  justify-content: flex-end;
+  left: 1838px;
+  min-width: 82px;
+  padding: 18.5px 10.5px;
+  position: fixed;
+  top: 476px;
+  z-index: 14;
+}
+
 .web-1920-1 .group-25 {
   background-image: url(../img/path-129@1x.png);
   background-position: 50% 50%;
@@ -629,18 +657,12 @@
   width: 58px;
 }
 
-.web-1920-1 .component-10-1 {
-  align-items: flex-start;
-  background-color: #1da1f2;
-  display: flex;
-  height: 82px;
-  justify-content: flex-end;
-  left: 1838px;
-  min-width: 82px;
-  padding: 17.8px 10.5px;
-  position: fixed;
-  top: 394px;
-  z-index: 16;
+.web-1920-1 .group-26 {
+  background-image: url(../img/path-150@1x.png);
+  background-position: 50% 50%;
+  background-size: cover;
+  height: 54px;
+  width: 58px;
 }
 
 .web-1920-1 .group-28 {
@@ -982,6 +1004,7 @@
   position: absolute;
   top: 356px;
   width: 2231px;
+  
 }
 
 .web-1920-1 .group-23 {

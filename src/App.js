@@ -2,21 +2,217 @@ import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { connect } from "./redux/blockchain/blockchainActions";
 import { fetchData } from "./redux/data/dataActions";
+import { HashLink, HashLink as Link } from 'react-router-hash-link';
 import * as s from "./styles/globalStyles";
 import styled from "styled-components";
 import './css/globals.css'
 import './css/styleguide.css'
 import './css/web-1920-1.css'
+import backgroundButtonConnect from "./img/btn_connect_natural.png";
+import backgroundButtonBuy from "./img/btn_buy_natural.png";
+import plusButton from "./img/btn_plus_natural.png";
+import minusButton from "./img/btn_minus_natural.png";
+
+const truncate = (input, len) =>
+  input.length > len ? `${input.substring(0, len)}...` : input;
+
+export const ResponsiveWrapper = styled.div`
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: stretched;
+  align-items: stretched;
+  width: 100%;
+  @media (min-width: 767px) {
+    flex-direction: row;
+  }
+`;
+export const StyledImg = styled.img`
+  box-shadow: 0px 5px 11px 2px rgba(0, 0, 0, 0.7);
+  border: 4px dashed var(--secondary);
+  background-color: var(--accent);
+  border-radius: 100%;
+  width: 200px;
+  @media (min-width: 900px) {
+    width: 250px;
+  }
+  @media (min-width: 1000px) {
+    width: 300px;
+  }
+  transition: width 0.5s;
+`;
+export const StyledButton = styled.button`
+  padding: 10px;
+  border-radius: 50px;
+  border: none;
+  padding: 10px;
+  font-weight: bold;
+  color: var(--secondary-text);
+  width: 200px;
+  cursor: pointer;
+  box-shadow: 0px 6px 0px -2px rgba(250, 250, 250, 0.3);
+  -webkit-box-shadow: 0px 6px 0px -2px rgba(250, 250, 250, 0.3);
+  -moz-box-shadow: 0px 6px 0px -2px rgba(250, 250, 250, 0.3);
+  :active {
+     box-shadow: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+  }
+`;
+
+export const ConnectButton = styled.button`
+  padding: 10px;
+  width: 487px;
+  height: 162px;
+  border: 0;
+  background: #6718C7;
+`;
+
+export const BuyButton = styled.button`
+  width: 372px;
+  height: 121px;
+  border: 0;
+  background: #6718C7;
+  position: absolute;
+  right: 40px;
+  top: 90px
+`;
+
+export const StyledLink = styled.a`
+  color: var(--white);
+  font-size: var(--font-size-m);
+  font-style: normal;
+  font-weight: 600;
+  font-family: var(--font-family-montserrat);
+  flex: 1;
+  letter-spacing: 0;
+  line-height: 25px;
+  margin-bottom: -4.5px;
+  margin-right: -2px;
+  margin-top: 2.5px;
+  white-space: nowrap;
+  width: 82px;
+  text-decoration: none;
+`;
+export const StyledRoundButton = styled.button`
+  margin-top: -40px;
+  margin-left: 62px;
+  border: none;
+  padding: 10px;
+  width: 113px;
+  height: 73px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
 function App() {
+  const dispatch = useDispatch();
+  const getData = () => {
+    if (blockchain.account !== "" && blockchain.smartContract !== null) {
+      dispatch(fetchData(blockchain.account));
+    }
+  };
+  const getConfig = async () => {
+    const configResponse = await fetch("/config/config.json", {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    });
+    const config = await configResponse.json();
+    SET_CONFIG(config);
+  };
+  
+  const claimNFTs = () => {
+    let cost = CONFIG.WEI_COST;
+    let gasLimit = CONFIG.GAS_LIMIT;
+    let totalCostWei = String(cost * mintAmount);
+    let totalGasLimit = String(gasLimit * mintAmount);
+    console.log("Cost: ", totalCostWei);
+    console.log("Gas limit: ", totalGasLimit);
+    setFeedback(`Minting your ${CONFIG.NFT_NAME}...`);
+    setClaimingNft(true);
+    blockchain.smartContract.methods
+      .mint(mintAmount)
+      .send({
+        gasLimit: String(totalGasLimit),
+        to: CONFIG.CONTRACT_ADDRESS,
+        from: blockchain.account,
+        value: totalCostWei,
+      })
+      .once("error", (err) => {
+        console.log(err);
+        setFeedback("Sorry, something went wrong please try again later.");
+        setClaimingNft(false);
+      })
+      .then((receipt) => {
+        console.log(receipt);
+        setFeedback(
+          `WOW, the ${CONFIG.NFT_NAME} is yours! go visit Opensea.io to view it.`
+        );
+        setClaimingNft(false);
+        dispatch(fetchData(blockchain.account));
+      });
+  };
 
+  const decrementMintAmount = () => {
+    let newMintAmount = mintAmount - 1;
+    if (newMintAmount < 1) {
+      newMintAmount = 1;
+    }
+    setMintAmount(newMintAmount);
+  };
+
+  const incrementMintAmount = () => {
+    let newMintAmount = mintAmount + 1;
+    if (newMintAmount > 10) {
+      newMintAmount = 10;
+    }
+    setMintAmount(newMintAmount);
+  };
+  const blockchain = useSelector((state) => state.blockchain);
+  const data = useSelector((state) => state.data);
+  const [claimingNft, setClaimingNft] = useState(false);
+  const [feedback, setFeedback] = useState(``);
+  const [mintAmount, setMintAmount] = useState(1);
+  const [CONFIG, SET_CONFIG] = useState({
+    CONTRACT_ADDRESS: "",
+    SCAN_LINK: "",
+    NETWORK: {
+      NAME: "",
+      SYMBOL: "",
+      ID: 0,
+    },
+    NFT_NAME: "",
+    SYMBOL: "",
+    MAX_SUPPLY: 1,
+    WEI_COST: 0,
+    DISPLAY_COST: 0,
+    GAS_LIMIT: 0,
+    MARKETPLACE: "",
+    MARKETPLACE_LINK: "",
+    SHOW_BACKGROUND: false,
+  });
   function importAll(r) {
     let images = {};
     r.keys().map((item, index) => { images[item.replace('./', '')] = r(item); });
     return images;
+    
+  
   }
 
   const images = importAll(require.context('./img', false, /\.png/));
+
+  useEffect(() => {
+    getConfig();
+  }, []);
+
+  useEffect(() => {
+    getData();
+  }, [blockchain.account]);
+
 
   return (
     <div>
@@ -46,47 +242,147 @@ function App() {
               <img className="group-20" src={images["group-20@1x.png"].default} />
               <div className="group-29">
                 <div className="component-16-1">
-                  <div className="about-us montserratalternates-semi-bold-white-25px">About us</div>
+                  <div className="about-us montserratalternates-semi-bold-white-25px"><HashLink style={{ color: 'inherit', textDecoration: 'inherit'}} smooth to="/path#AboutUsTag">About us</HashLink></div>
                 </div>
                 <div className="component-15-1">
-                  <div className="road-map montserratalternates-semi-bold-white-25px">Road Map</div>
+                  <div className="road-map montserratalternates-semi-bold-white-25px"><HashLink style={{ color: 'inherit', textDecoration: 'inherit'}} smooth to="/pathLink#RoadMapTag">Road Map</HashLink></div>
                 </div>
                 <div className="component-14-1">
-                  <div className="goa-ls montserratalternates-semi-bold-white-25px">Goals</div>
+                  <div className="goa-ls montserratalternates-semi-bold-white-25px"><HashLink style={{ color: 'inherit', textDecoration: 'inherit'}} smooth to="/pathLink#GoalsTag">Goals</HashLink></div>
                 </div>
                 <div className="component-13-1">
-                  <div className="r-arity montserratalternates-semi-bold-white-25px">Rarity</div>
+                  <div className="r-arity montserratalternates-semi-bold-white-25px"><HashLink style={{ color: 'inherit', textDecoration: 'inherit'}} smooth to="/pathLink#RarityTag">Rarity</HashLink></div>
                 </div>
-                <div className="component-12-1"><div className="team montserratalternates-semi-bold-white-25px">Team</div></div>
-                <div className="component-11-1"><div className="faq montserratalternates-semi-bold-white-25px">FAQ</div></div>
+                <div className="component-12-1"><div className="team montserratalternates-semi-bold-white-25px"><HashLink style={{ color: 'inherit', textDecoration: 'inherit'}} smooth to="/pathLink#TeamTag">Team</HashLink></div></div>
+                <div className="component-11-1"><div className="faq montserratalternates-semi-bold-white-25px"><HashLink style={{ color: 'inherit', textDecoration: 'inherit'}} smooth to="/pathLink#FAQTag">FAQ</HashLink></div></div>
               </div>
               <div className="group-4"><img className="union-7" src={images["union-7@1x.png"].default} /></div>
-              <div className="minted-25">MINTED 25%</div>
-              <div className="about-us-1">ABOUT US</div>
+              {/*<s.TextTitle
+              style={{
+                position: "absolute",
+                top: "650px",
+                right: "446px",
+                textAlign: "center",
+                fontSize: 40,
+                fontWeight: "bold",
+                color: "var(--accent-text)",
+              }}
+            >
+              {data.totalSupply} / {CONFIG.MAX_SUPPLY} has been minted
+            </s.TextTitle>*/}
+              <div id= "AboutUsTag" className="about-us-1">ABOUT US</div>
               <img className="path-22" src={images["path-22@1x.png"].default} />
               <img className="path-23" src={images["path-23@1x.png"].default} />
               <img className="path-25" src={images["path-24@1x.png"].default} />
               <img className="path-24" src={images["path-25@1x.png"].default} />
               <img className="path-26" src={images["path-26@1x.png"].default} />
-              <div className="component-17-1">
-                <div className="overlap-group3">
-                  <div className="group-7" />
-                  <div className="group-6">
-                    <div className="mask-group-1">
-                      <div className="group-5">
-                        <div className="overlap-group-1">
-                          <img className="path-12" src={images["path-12-1@1x.png"].default} />
-                          <img className="path-15" src={images["path-12-1@1x.png"].default} />
-                          <img className="path-14" src={images["path-12-1@1x.png"].default} />
-                          <img className="path-132" src={images["path-12-1@1x.png"].default} />
-                          <img className="path-134" src={images["path-12-1@1x.png"].default} />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="connectwallet">CONNECT<br />WALLET</div>
-                </div>
-              </div>
+            {/* <div className="component-17-1">          
+          <s.Container>
+            <s.SpacerSmall />
+            {Number(data.totalSupply) >= CONFIG.MAX_SUPPLY ? (
+              <>
+                <s.SpacerSmall />
+              </>
+            ) : (
+              <>
+                {blockchain.account === "" ||
+                blockchain.smartContract === null ? (
+                  <s.Container ai={"center"} jc={"center"}>
+                    <s.SpacerSmall />
+                    <ConnectButton style={{ backgroundImage: `url(${backgroundButtonConnect})`}}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        dispatch(connect());
+                        getData();
+                      }}
+                    >
+                    </ConnectButton>
+                    {blockchain.errorMsg !== "" ? (
+                      <>
+                        <s.SpacerSmall />
+                        <s.TextDescription
+                          style={{
+                            textAlign: "center",
+                            color: "var(--accent-text)",
+                          }}
+                        >
+                          {blockchain.errorMsg}
+                        </s.TextDescription>
+                      </>
+                    ) : null}
+                  </s.Container>
+                ) : (
+                  <>
+                    
+                    <s.SpacerMedium />
+                    <s.Container ai={"center"} jc={"center"} fd={"row"}>
+                      <StyledRoundButton 
+                        style={{ marginLeft: "59px", marginRight: "73px", backgroundImage: `url(${minusButton})` }}
+                        disabled={claimingNft ? 1 : 0}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          decrementMintAmount();
+                        }}
+                      >
+                        
+                      </StyledRoundButton>
+                      <s.TextDescription
+                        style={{
+                          fontSize: "30px",
+                          color: "var(--accent-text)",
+                          top: "15px",
+                          left: "255px",
+                          position: "absolute",
+                        }}
+                      >
+                        {mintAmount}
+                      </s.TextDescription>
+                      <StyledRoundButton style={{ marginLeft: "40px", backgroundImage: `url(${plusButton})`}}
+                        disabled={claimingNft ? 1 : 0}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          incrementMintAmount();
+                        }}
+                      >
+                        
+                      </StyledRoundButton>
+                    </s.Container>
+                    <s.SpacerSmall />
+                    <s.Container ai={"center"} jc={"center"} fd={"row"}>
+                      <BuyButton style={{ backgroundImage: `url(${backgroundButtonBuy})`}}
+                        disabled={claimingNft ? 1 : 0}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          claimNFTs();
+                          getData();
+                        }}
+                      >
+                        {claimingNft ? "BUSY" : ""}
+                      </BuyButton>
+                      <s.TextDescription
+                      style={{
+                        textAlign: "center",
+                        color: "var(--accent-text)",
+                        position: "absolute",
+                        fontSize: "23px",
+                        top: "228px",
+                        right: "-40px",
+                        width: "530px",
+                      }}
+                    >
+                      {feedback}
+                    </s.TextDescription>
+                    </s.Container>
+                  </>
+                )}
+              </>
+            )}
+            <s.SpacerMedium />
+          </s.Container>
+                    <s.SpacerLarge />
+          
+        
+                    </div> */}
               <img className="x08" src={images["08@1x.png"].default} />
             </div>
             <div className="overlap-group7">
@@ -99,7 +395,7 @@ function App() {
                 </div>
               </div>
               <div className="rectangle-7" />
-              <div className="road-map-1 asphalt-black-white-94px">ROAD MAP</div>
+              <div id="RoadMapTag" className="road-map-1 asphalt-black-white-94px">ROAD MAP</div>
               <img className="path-33" src={images["path-23@1x.png"].default} />
               <img className="path-34" src={images["path-24@1x.png"].default} />
               <img className="mapnobg" src={images["map-no-bg@1x.png"].default} />
@@ -114,14 +410,17 @@ function App() {
               More<br />-1/1 Traits Suggested By Our Discord Community
             </div>
           </div>
+          <div className="component-9-2">
+            <HashLink smooth to="/path#top"><div className="group-26" /></HashLink>
+          </div>
           <div className="component-9-1">
-            <div className="group-25" />
+            <a href="http://discord.gg/M2wpH2BpbA" target="_blank"><div className="group-25" /></a>
           </div>
           <div className="component-10-1">
-            <div className="group-28" />
+            <a href="https://twitter.com/BearsAreBarely" target="_blank"><div className="group-28" /></a>
           </div>
           <div className="overlap-group15">
-            <div className="text-3">GOALS FOR<br />COMPLITION</div>
+            <div id="GoalsTag" className="text-3">GOALS FOR<br />COMPLITION</div>
             <img className="path-128" src={images["path-128@1x.png"].default} />
           </div>
           <div className="overlap-group12">
@@ -194,7 +493,7 @@ function App() {
                 OTHERS
               </div>
               <div className="rectangle-33" />
-              <div className="rarity asphalt-black-white-94px">RARITY</div>
+              <div id="RarityTag" className="rarity asphalt-black-white-94px">RARITY</div>
               <img className="path-125" src={images["path-125@1x.png"].default} />
               <img className="path-126" src={images["path-126@1x.png"].default} />
             </div>
@@ -203,14 +502,13 @@ function App() {
             <div className="rectangle-6" />
             <img className="group-21" src={images["group-21@1x.png"].default} />
             <div className="overlap-group4">
-              <div className="the-team asphalt-black-white-94px">THE TEAM</div>
+              <div id="TeamTag" className="the-team asphalt-black-white-94px">THE TEAM</div>
               <img className="path-27" src={images["path-27@1x.png"].default} />
               <img className="path-28" src={images["path-28@1x.png"].default} />
             </div>
             <div className="text-4">
-              <span className="montserrat-extra-bold-ice-cold-25px">ORI<br /></span><span className="montserratalternates-semi-bold-ice-cold-25px">Professional animator living in Israel for the past xxx years.<br />Ori created Barely Bear back in May
-                2021,<br />listing it in May for 0.01.&nbsp;&nbsp;Addicted to cartoons and animation,<br />Ori’s end goal
-                is Barely Bear Studios</span>
+              <span className="montserrat-extra-bold-ice-cold-25px">ORI<br /></span><span className="montserratalternates-semi-bold-ice-cold-25px">The best person in the entire universe.  Ori was created by a spiritual higher being that came to earth on a camping trip.  Forgotten beyond time, he quickly adjusted to popular culture and behavior, in the process he created the Barely Bears universe
+              </span>
             </div>
             <div className="james-buying-bear-0">
               <span className="montserrat-extra-bold-ice-cold-25px">JAMES<br /></span><span className="montserratalternates-semi-bold-ice-cold-25px">Buying Bear #023 back in May, James spotted the Bear’s Discord link<br />on Twitter was broken. one DM
@@ -219,44 +517,44 @@ function App() {
                 our nocturnal Bear slamming caffeine &amp; keyboards</span>
             </div>
             <div className="text-5">
-              <span className="montserrat-extra-bold-ice-cold-25px">AMIR<br /></span><span className="montserratalternates-semi-bold-ice-cold-25px">Professional animator living in Israel for the past xxx years.<br />Ori drew the first Barely Bear back
-                in March 2021,<br />listing it in May for 0.01.&nbsp;&nbsp;Addicted to cartoons and animation,<br />Ori’s
-                end goal is Barely Bear Studios</span>
+              <span className="montserrat-extra-bold-ice-cold-25px">AMIR<br /></span><span className="montserratalternates-semi-bold-ice-cold-25px">Among friends, Amir is referred as 'The Bear'! Product manager at day and hectic developer at night. With over 5 years in the crypto industry, Amir is here for the long run </span>
             </div>
             <div className="group-9" />
             <div className="group-12" />
             <div className="group-13" />
             <div className="text-6">
-              <span className="montserrat-extra-bold-ice-cold-25px">INBAL<br /></span><span className="montserratalternates-semi-bold-ice-cold-25px">Professional animator living in Israel for the past xxx years.<br />Ori drew the first Barely Bear back
-                in March 2021,<br />listing it in May for 0.01.&nbsp;&nbsp;Addicted to cartoons and animation,<br />Ori’s
-                end goal is Barely Bear Studios</span>
+              <span className="montserrat-extra-bold-ice-cold-25px">INBAL<br /></span><span className="montserratalternates-semi-bold-ice-cold-25px">Living in Tel Aviv, Inbal is an independent animator & illustrator with a over a decade of experience in the industry.</span>
             </div>
             <div className="group-15" />
             <div className="text-7">
-              <span className="montserrat-extra-bold-ice-cold-25px">YAIR<br /></span><span className="montserratalternates-semi-bold-ice-cold-25px">Professional animator living in Israel for the past xxx years.<br />Ori drew the first Barely Bear back
-                in March 2021,<br />listing it in May for 0.01.&nbsp;&nbsp;Addicted to cartoons and animation,<br />Ori’s
-                end goal is Barely Bear Studios</span>
+              <span className="montserrat-extra-bold-ice-cold-25px">YAIR<br /></span><span className="montserratalternates-semi-bold-ice-cold-25px">Ori’s best friend since high school!
+              and a graphic designer with over 10 years experience in branding, gaming products design and illustration.</span>
             </div>
             <div className="group-14" />
           </div>
-          <div className="faq-1">FAQ</div>
-          <div className="overviewour-10k-col">
-            <span className="montserratalternates-semi-bold-gossamer-25px">Overview<br />Our 10k collection will launch on this very site in December<br />- 10,000 pieces<br />- 0.05
-              ETH + gas to mint<br />- IP is open for holders<br />- Public mint transaction limit set to 10
-              tokens&nbsp;&nbsp;<br /><br />How does your OG collection tie into your 10k?<br />Barely Bears was started
+          <div id="FAQTag" className="faq-1">FAQ</div>
+          <div className="overviewour-10k-col" style={{ width: '1200px'}}>
+            <span className="montserratalternates-semi-bold-gossamer-25px"><u>Overview</u><br /><br />Our 10k collection will launch on this very site in December<br />- 10,000 pieces<br />- 0.05
+              ETH + gas to mint<br />- IP is open for holders<br />- Public mint transaction limit set to 10tokens<br /><br />
+              How does your OG collection tie into your 10k?<br />Barely Bears was started
               back in May 2021 with 1/1 artwork and airdrops for the community.&nbsp;&nbsp;<br /><br />All tokens from our
               OG Collection grant whitelist for 2 mints while our 110 OG Bears also grant a free mint (you only pay
-              gas).&nbsp;&nbsp;<br /><br />Official OpenSea links:<br />1/1 OG Bears - </span><span className="montserratalternates-black-gossamer-25px">https://opensea.io/collection/barely-bears-1?search[chains][0]=ETHEREUM&amp;search[sortAscending]=true&amp;search[sortBy]=PRICE<br /></span><span className="montserratalternates-semi-bold-gossamer-25px"><br />1/99 Bear #100 - </span><span className="montserratalternates-black-gossamer-25px">https://opensea.io/assets/matic/0x2953399124f0cbb46d2cbacd8a89cf0599974963/109680211364835640009503122431304661144065192008992185677036744301032092205155<br /></span><span className="montserratalternates-semi-bold-gossamer-25px"><br />Halloween Special - </span><span className="montserratalternates-black-gossamer-25px">https://opensea.io/collection/barely-bear-events<br />Secret -
-              https://opensea.io/collection/the-honeypot-club<br /></span><span className="montserratalternates-semi-bold-gossamer-25px"><br />How will whitelist work?<br />We hate gas wars, to ensure a fair drop &amp; minimise wasted gas
+              gas).&nbsp;&nbsp;<br /><br /><br />
+              <u>Official OpenSea links:</u><br /><br />
+              - <a href="https://opensea.io/collection/barely-bears-1?search[chains][0]=ETHEREUM&amp;search[sortAscending]=true&amp;search[sortBy]=PRICE">1/1 OG Bears </a>
+              <br />- <a href="https://opensea.io/assets/matic/0x2953399124f0cbb46d2cbacd8a89cf0599974963/109680211364835640009503122431304661144065192008992185677036744301032092205155">1/99 Bear #100</a>
+              <br />- <a href="https://opensea.io/collection/barely-bear-events">Halloween Special</a> 
+              <br />- <a href="https://opensea.io/collection/the-honeypot-club">Secret</a><br /><br />
+              <u>How will whitelist work?</u><br /><br />We hate gas wars, to ensure a fair drop &amp; minimise wasted gas
               money, we’re splitting the drop into 3 parts<br />- 72h for OG holders to claim their free (plus gas)
               mint<br />- 72h whitelist for OG holders &amp; competition winners to mint<br />- Public mint opens
-              <br /><br />How can I join the community?<br />Jump into our Discord - discord.gg/M2wpH2BpbA - we’ve got
+              <br /><br />
+              <u>How can I join the community?</u><br /><br />Jump into our <a href="discord.gg/M2wpH2BpbA">Discord</a> - we’ve got
               regular competitions, games and private channels for collectors to spit that alpha. Feel free to ask us
-              anything in general chat!&nbsp;&nbsp;<br /><br />Throw us a GM on Twitter -
-              https://twitter.com/BearsAreBarely - and be prepared for a few follow trains<br /><br />What happens after
-              the 10k?<br />Check out our goals for % completion of the 10k<br />Once the 10k sells out, we’re full steam
-              ahead on Phase 3, there might be a few clues on our island map</span>
-          </div>
+              anything in general chat!&nbsp;&nbsp;<br /><br />Throw us a GM on <a href="https://twitter.com/BearsAreBarely">Twitter</a> - and be prepared for a few follow trains<br /><br />
+              <u>What happens after the 10k?</u><br /><br />Check out our goals for % completion of the 10k. Once the 10k sells out, we’re full steam
+              ahead on Phase 3, there might be a few clues on our island map!</span>
+              </div>
         </div>
       </div>
     </div>

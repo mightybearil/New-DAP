@@ -1,0 +1,18 @@
+{
+  "CONTRACT_ADDRESS": "0xA2141905B705CAcb7c483F94a2643A73Fcb1DF01",
+  "SCAN_LINK": "https://rinkeby.etherscan.io/address/0xA2141905B705CAcb7c483F94a2643A73Fcb1DF01",
+  "NETWORK": {
+      "NAME": "Etherium Rinkeby",
+      "SYMBOL": "ETH",
+      "ID": 4
+  },
+  "NFT_NAME": "MightyBear4",
+  "SYMBOL": "MB4",
+  "MAX_SUPPLY": 10000,
+  "WEI_COST": 50000000000000000,
+  "DISPLAY_COST": 0.05,
+  "GAS_LIMIT": 285000,
+  "MARKETPLACE": "Opeansea Test",
+  "MARKETPLACE_LINK": "https://testnets.opensea.io/collection/mightybear5",
+  "SHOW_BACKGROUND": false
+}
